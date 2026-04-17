@@ -1,4 +1,4 @@
-# 🍀 Golpe de Suerte - Sistema de Gestión de Rifas
+**🍀 Golpe de Suerte - Sistema de Gestión de Rifas**
 
 Una aplicación moderna para gestionar sorteos y rifas, compatible con **Android, iOS y Web**.
 
@@ -61,7 +61,7 @@ npm start
 GolpedeSuerte-2/
 ├── App.js                          # Punto de entrada
 ├── navigation/
-│   ├── AppNavigator.js            # Stack y Tab navigation (web + móvil compatible)
+│   ├── AppNavigator.js            # Stack y Tab navigation (móvil compatible)
 │   ├── AppProvider.js             # Inicialización de BD
 │   └── AuthContext.js             # Contexto de autenticación
 ├── src/
@@ -95,20 +95,11 @@ GolpedeSuerte-2/
 - **Acentos**: Rojo (#FF6B6B), Naranja (#f7a819)
 - **Fondos**: Blanco (#fff), Verde claro (#eaf7ea)
 
-## 🔧 Compatibilidad
-
 ### Plataformas soportadas
 | Plataforma | Estado | Notas |
 |-----------|--------|-------|
 | Android   | ✅ Full | Completa |
 | iOS       | ✅ Full | Completa |
-| Web       | ✅ Full | Responsive |
-
-### Navegadores compatibles (Web)
-- Chrome (recomendado)
-- Firefox
-- Safari
-- Edge
 
 ## 📦 Dependencias principales
 
@@ -152,13 +143,6 @@ EXPO_PUBLIC_APP_ID=tu_app_id
 - **IndexedDB** (mediante expo-sqlite adapter)
 - Datos almacenados localmente en el navegador
 
-## 🌐 URLs de acceso
-
-| Entorno | URL |
-|---------|-----|
-| Local Web | http://localhost:19006 |
-| Red Local | http://tu-ip:19006 |
-
 ## 📝 Funcionalidades por pantalla
 
 ### HomeScreen (Panel Principal)
@@ -184,28 +168,13 @@ EXPO_PUBLIC_APP_ID=tu_app_id
 - Editar participante por número
 - Modal para agregar/editar datos
 
-## 🐛 Troubleshooting
-
-### Error en web: "Imagen no carga"
-- Verificar que `Logo.png` esté en `/assets/`
-- Usar `require()` para referencias estáticas (ya está implementado)
-
-### Error SQLite en web
-- Expo SQLite usa IndexedDB automáticamente
-- Los datos persisten en el navegador
-
-### "Module not found" en web
-- Ejecutar: `npm install`
-- Limpiar cache: `rm -rf node_modules/.cache`
-- Reiniciar servidor: `npm run web`
-
 ## 📱 Desarrollo
 
 ### Formato de código
 - **Lenguaje**: JavaScript/React Native
 - **Navegación**: React Navigation
 - **Estilos**: StyleSheet de React Native
-- **Base de datos**: SQLite (móvil) / IndexedDB (web)
+- **Base de datos**: SQLite (móvil)
 
 ### Testing
 Para probar la app:
@@ -243,7 +212,3 @@ Desarrollado con:
 - React Navigation
 - Firebase
 - SQLite
-
----
-
-**🍀 ¡Buena suerte con tus rifas!** 🍀

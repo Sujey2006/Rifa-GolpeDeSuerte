@@ -37,22 +37,12 @@ npm run ios
 npx expo start --ios
 ```
 
-### Ejecución en Web
-```bash
-npm run web
-# o
-npx expo start --web
-```
-
-Accede a: **http://localhost:19006**
-
 ### Ejecución general (elige la plataforma)
 ```bash
 npm start
 # Luego presiona:
 # - 'a' para Android
 # - 'i' para iOS
-# - 'w' para Web
 ```
 
 ## 📋 Estructura del proyecto

@@ -1,7 +1,5 @@
 # 🍀 Golpe de Suerte - Guía de Compatibilidad Web
 
-# Instrucciones para ejecutar en Web
-
 # 1. Iniciar en navegador web
 ```bash
 npx expo start --web
@@ -19,10 +17,6 @@ npx expo start --web
 - Navegación compatible con stack y bottom tabs
 - Imágenes estáticas requieren import() - FUNCIONAN
 - Modal compatible en web
-
-# 4. URLs de acceso
-- **Local**: http://localhost:19006
-- **En red**: Tu IP:19006
 
 # 5. Notas importantes
 - Los datos se guardan en IndexedDB en web (no en SQLite nativo)

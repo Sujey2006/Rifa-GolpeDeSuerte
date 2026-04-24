@@ -3,12 +3,12 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, TextInput,
 import { useRoute } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
 import sqliteService from '../services/sqliteService'
-import colors from '../constants/colors'
+import { useTheme } from '../../navigation/ThemeContext'
 
-const { width } = Dimensions.get('window');
-const CELL_SIZE = 70; // Tamaño fijo más grande para cada celda
+const CELL_SIZE = 70;
 
 const RaffleTableScreen = () => {
+  const { mainColor } = useTheme();
   const [boletos, setBoletos] = useState([])
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedNumero, setSelectedNumero] = useState(null)
@@ -64,7 +64,7 @@ const RaffleTableScreen = () => {
         key={`cell-${numero}`}
         style={[
             styles.cell,
-            boleto && boleto.estado_pago === 'pagado' ? styles.cellPagado :
+            boleto && boleto.estado_pago === 'pagado' ? { backgroundColor: mainColor } :
             boleto ? styles.cellPendiente : styles.cellLibre
         ]}
         onPress={() => handleEdit(numero)}
@@ -88,11 +88,7 @@ const RaffleTableScreen = () => {
       for (let c = 0; c < 10; c++) {
         rowCells.push(renderCell(r * 10 + c))
       }
-      tableRows.push(
-        <View key={`row-${r}`} style={styles.row}>
-          {rowCells}
-        </View>
-      )
+      tableRows.push(<View key={`row-${r}`} style={styles.row}>{rowCells}</View>)
     }
     return tableRows
   }
@@ -102,7 +98,7 @@ const RaffleTableScreen = () => {
       <View style={styles.legend}>
           <View style={styles.legendItem}><View style={[styles.dot, styles.cellLibre]} /><Text style={styles.legendText}>Libre</Text></View>
           <View style={styles.legendItem}><View style={[styles.dot, styles.cellPendiente]} /><Text style={styles.legendText}>Pendiente</Text></View>
-          <View style={styles.legendItem}><View style={[styles.dot, styles.cellPagado]} /><Text style={styles.legendText}>Pagado</Text></View>
+          <View style={styles.legendItem}><View style={[styles.dot, { backgroundColor: mainColor }]} /><Text style={styles.legendText}>Pagado</Text></View>
       </View>
 
       <ScrollView style={styles.container}>
@@ -117,37 +113,32 @@ const RaffleTableScreen = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Número {selectedNumero?.toString().padStart(2, '0')}</Text>
+                <Text style={[styles.modalTitle, { color: mainColor }]}>Número {selectedNumero?.toString().padStart(2, '0')}</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
                     <Ionicons name="close-circle" size={30} color="#666" />
                 </TouchableOpacity>
             </View>
 
             <Text style={styles.label}>Nombre Participante:</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Escribe el nombre aquí..."
-              value={nombre}
-              onChangeText={setNombre}
-            />
+            <TextInput style={styles.input} placeholder="Escribe el nombre aquí..." value={nombre} onChangeText={setNombre} />
 
             <Text style={styles.label}>Estado del Pago:</Text>
             <View style={styles.statusToggle}>
                 <TouchableOpacity
-                    style={[styles.statusBtn, estadoPago === 'pendiente' && styles.statusBtnActive]}
+                    style={[styles.statusBtn, estadoPago === 'pendiente' && { backgroundColor: '#ff6b6b' }]}
                     onPress={() => setEstadoPago('pendiente')}
                 >
                     <Text style={[styles.statusBtnText, estadoPago === 'pendiente' && styles.textWhite]}>PENDIENTE</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[styles.statusBtn, estadoPago === 'pagado' && styles.statusBtnActive]}
+                    style={[styles.statusBtn, estadoPago === 'pagado' && { backgroundColor: mainColor }]}
                     onPress={() => setEstadoPago('pagado')}
                 >
                     <Text style={[styles.statusBtnText, estadoPago === 'pagado' && styles.textWhite]}>PAGADO</Text>
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <TouchableOpacity style={[styles.saveButton, { backgroundColor: mainColor }]} onPress={handleSave}>
               <Text style={styles.buttonText}>Confirmar y Guardar</Text>
             </TouchableOpacity>
           </View>
@@ -158,131 +149,31 @@ const RaffleTableScreen = () => {
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    backgroundColor: '#f4f7f4',
-  },
-  legend: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
+  mainContainer: { flex: 1, backgroundColor: '#f4f7f4' },
+  legend: { flexDirection: 'row', justifyContent: 'space-around', padding: 10, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#eee' },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  legendText: { fontSize: 12, color: '#666', fontWeight: '600' },
-  dot: { width: 12, height: 12, borderRadius: 6, borderWidth: 1, borderColor: '#ddd' },
-  container: {
-    flex: 1,
-  },
-  table: {
-    padding: 20,
-    backgroundColor: '#f4f7f4',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  cell: {
-    width: CELL_SIZE,
-    height: CELL_SIZE,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 3,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.05)',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
-  },
+  legendText: { fontSize: 11, color: '#666', fontWeight: '600' },
+  dot: { width: 10, height: 10, borderRadius: 5, borderWidth: 1, borderColor: '#ddd' },
+  container: { flex: 1 },
+  table: { padding: 10, backgroundColor: '#f4f7f4' },
+  row: { flexDirection: 'row' },
+  cell: { width: CELL_SIZE, height: CELL_SIZE, justifyContent: 'center', alignItems: 'center', margin: 3, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', elevation: 2 },
   cellLibre: { backgroundColor: '#fff' },
   cellPendiente: { backgroundColor: '#f54343' },
-  cellPagado: { backgroundColor: '#2d8f3a' },
-  numero: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
+  numero: { fontSize: 14, fontWeight: 'bold', color: '#333' },
   textWhite: { color: '#fff' },
-  miniNombre: {
-    fontSize: 9,
-    color: '#fff',
-    width: '90%',
-    textAlign: 'center',
-    marginTop: 2,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: 25,
-    borderRadius: 25,
-    width: '90%',
-    elevation: 10,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#164e24',
-  },
-  label: {
-    fontSize: 14,
-    color: '#777',
-    marginBottom: 8,
-    fontWeight: '600',
-  },
-  input: {
-    backgroundColor: '#f0f2f0',
-    padding: 15,
-    borderRadius: 15,
-    fontSize: 16,
-    marginBottom: 20,
-    color: '#333',
-  },
-  statusToggle: {
-    flexDirection: 'row',
-    backgroundColor: '#f0f2f0',
-    borderRadius: 15,
-    padding: 5,
-    marginBottom: 30,
-  },
-  statusBtn: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderRadius: 12,
-  },
-  statusBtnActive: {
-      backgroundColor: '#2d8f3a',
-  },
-  statusBtnText: {
-      fontWeight: 'bold',
-      color: '#999',
-  },
-  saveButton: {
-    backgroundColor: '#164e24',
-    padding: 18,
-    borderRadius: 15,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  miniNombre: { fontSize: 9, color: '#fff', width: '90%', textAlign: 'center', marginTop: 2 },
+  modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)' },
+  modalContent: { backgroundColor: '#fff', padding: 25, borderRadius: 30, width: '90%', elevation: 10 },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+  modalTitle: { fontSize: 22, fontWeight: 'bold' },
+  label: { fontSize: 14, color: '#777', marginBottom: 8, fontWeight: '600' },
+  input: { backgroundColor: '#f0f2f0', padding: 15, borderRadius: 15, fontSize: 16, marginBottom: 20 },
+  statusToggle: { flexDirection: 'row', backgroundColor: '#f0f2f0', borderRadius: 15, padding: 5, marginBottom: 30 },
+  statusBtn: { flex: 1, paddingVertical: 12, alignItems: 'center', borderRadius: 12 },
+  statusBtnText: { fontWeight: 'bold', color: '#999' , fontSize: 12},
+  saveButton: { padding: 18, borderRadius: 15, alignItems: 'center' },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 })
 
-export default RaffleTableScreen
+export default RaffleTableScreen;

@@ -8,7 +8,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  getAuth
+  getAuth,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
@@ -22,29 +23,33 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_APP_ID
 };
 
-// Initialize Firebase
+// Inicializar Firebase App
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// Analytics solo en Web (donde existe window/document)
-let analytics;
+// Inicializar Analytics solo en Web
 if (Platform.OS === 'web') {
   isSupported().then(supported => {
-    if (supported) {
-      analytics = getAnalytics(app);
-    }
+    if (supported) getAnalytics(app);
   });
 }
 
-const auth = initializeAuth(app, {
-  persistence: Platform.OS === 'web'
-    ? browserLocalPersistence
-    : getReactNativePersistence(ReactNativeAsyncStorage)
-});
+// Inicializar Auth de forma segura para evitar el error "already-initialized"
+let auth;
+try {
+  auth = getAuth(app);
+} catch (e) {
+  auth = initializeAuth(app, {
+    persistence: Platform.OS === 'web'
+      ? browserLocalPersistence
+      : getReactNativePersistence(ReactNativeAsyncStorage)
+  });
+}
 
 export { 
   auth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut
+  signOut,
+  sendPasswordResetEmail
 };

@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { LinearGradient } from 'expo-linear-gradient'
 import sqliteService from '../services/sqliteService'
-import colors from '../constants/colors'
+import { useTheme } from '../../navigation/ThemeContext'
 
 const CreateRaffleScreen = () => {
+  const { mainColor } = useTheme();
   const [nombre, setNombre] = useState('')
   const [premio, setPremio] = useState('')
   const [descripcion, setDescripcion] = useState('')
-  const [fechaFin, setFechaFin] = useState('')
+  const [fechaFin, setEditFecha] = useState('')
   const [precioBoleto, setPrecioBoleto] = useState('')
   const navigation = useNavigation()
 
@@ -24,84 +26,42 @@ const CreateRaffleScreen = () => {
       if (id) {
         Alert.alert('Éxito', 'Sorteo creado correctamente')
         navigation.goBack()
-      } else {
-        Alert.alert('Error', 'No se pudo crear el sorteo')
       }
     } catch (error) {
-      console.error(error)
-      Alert.alert('Error', 'Ocurrió un error al guardar en la base de datos')
+      Alert.alert('Error', 'Ocurrió un error al guardar')
     }
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <ScrollView
-        style={styles.container}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <View style={styles.headerContainer}>
-          <Image
-            source={require('../../assets/Logo.png')}
-            style={styles.headerImage}
-            resizeMode="contain"
-          />
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+
+        {/* CABECERA CON DEGRADADO NEGRO Y COLOR TEMA */}
+        <LinearGradient colors={['#000000', mainColor]} style={styles.headerContainer}>
+          <Image source={require('../../assets/Logo.png')} style={styles.headerImage} resizeMode="contain" />
           <Text style={styles.title}>Crear Nuevo Sorteo</Text>
-        </View>
+        </LinearGradient>
 
         <View style={styles.formContainer}>
-          <Text style={styles.label}>Nombre del sorteo</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nombre del sorteo"
-            value={nombre}
-            onChangeText={setNombre}
-            placeholderTextColor="#999"
-          />
+          <Text style={[styles.label, { color: mainColor }]}>Nombre del sorteo</Text>
+          <TextInput style={styles.input} placeholder="Ej: Gran Rifa Solidaria" value={nombre} onChangeText={setNombre} />
 
-          <Text style={styles.label}>Premio</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Premio"
-            value={premio}
-            onChangeText={setPremio}
-            placeholderTextColor="#999"
-          />
+          <Text style={[styles.label, { color: mainColor }]}>Premio</Text>
+          <TextInput style={styles.input} placeholder="Ej: $1.000.000" value={premio} onChangeText={setPremio} />
 
-          <Text style={styles.label}>Descripción (opcional)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Descripción (opcional)"
-            value={descripcion}
-            onChangeText={setDescripcion}
-            multiline
-            placeholderTextColor="#999"
-          />
+          <Text style={[styles.label, { color: mainColor }]}>Descripción (opcional)</Text>
+          <TextInput style={styles.input} placeholder="Detalles adicionales..." value={descripcion} onChangeText={setDescripcion} multiline />
 
-          <Text style={styles.label}>Fecha fin</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Fecha fin (YY-MM-DD)"
-            value={fechaFin}
-            onChangeText={setFechaFin}
-            placeholderTextColor="#999"
-          />
+          <Text style={[styles.label, { color: mainColor }]}>Fecha de Cierre</Text>
+          <TextInput style={styles.input} placeholder="2024-12-31" value={fechaFin} onChangeText={setEditFecha} />
 
-          <Text style={styles.label}>Precio por boleto</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Precio por boleto"
-            value={precioBoleto}
-            onChangeText={setPrecioBoleto}
-            keyboardType="numeric"
-            placeholderTextColor="#999"
-          />
+          <Text style={[styles.label, { color: mainColor }]}>Precio por boleto ($)</Text>
+          <TextInput style={styles.input} placeholder="0.000" value={precioBoleto} onChangeText={setPrecioBoleto} keyboardType="numeric" />
 
-          <TouchableOpacity style={styles.button} onPress={handleCreate}>
-            <Text style={styles.buttonText}>Crear Sorteo</Text>
+          <TouchableOpacity style={styles.btnWrapper} onPress={handleCreate}>
+            <LinearGradient colors={[mainColor, mainColor + 'cc']} start={{x:0, y:0}} end={{x:1, y:0}} style={styles.button}>
+                <Text style={styles.buttonText}>Publicar Sorteo</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -110,69 +70,16 @@ const CreateRaffleScreen = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#eaf7ea',
-  },
-  headerContainer: {
-    alignItems: 'center',
-    backgroundColor: '#2d8f3a',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-  },
-  headerImage: {
-    width: 70,
-    height: 70,
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 26,
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  formContainer: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#164e24',
-    marginBottom: 8,
-    marginTop: 12,
-  },
-  input: {
-    backgroundColor: '#fff',
-    padding: 14,
-    marginBottom: 10,
-    borderRadius: 12,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#d0e8d0',
-    color: '#111',
-  },
-  button: {
-    backgroundColor: '#2a8f42',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  container: { flex: 1, backgroundColor: '#f4f7f4' },
+  headerContainer: { alignItems: 'center', padding: 30, paddingTop: 60, borderBottomLeftRadius: 40, borderBottomRightRadius: 40, elevation: 10 },
+  headerImage: { width: 80, height: 80, marginBottom: 15 },
+  title: { fontSize: 24, color: '#fff', fontWeight: 'bold' },
+  formContainer: { padding: 25, paddingBottom: 50 },
+  label: { fontSize: 13, fontWeight: '900', marginBottom: 8, marginTop: 15, letterSpacing: 0.5 },
+  input: { backgroundColor: '#fff', padding: 15, borderRadius: 15, fontSize: 16, elevation: 2, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5 },
+  btnWrapper: { marginTop: 35, borderRadius: 20, overflow: 'hidden', elevation: 8 },
+  button: { padding: 20, alignItems: 'center' },
+  buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
 })
 
 export default CreateRaffleScreen

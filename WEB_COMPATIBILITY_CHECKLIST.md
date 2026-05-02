@@ -98,4 +98,3 @@ npm start
 - Navegación compatible con todas las plataformas
 - Estilos responsivos para web
 - Documentación completa para ejecución en web
-
